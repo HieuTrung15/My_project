@@ -5,7 +5,7 @@ class AccountMove(models.Model):
     _inherit = "account.move"
 
     commission_total = fields.Float(string="Commissions", compute="_compute_commission_total", store=True)
-    settlement_id = fields.Many2one(comodel_name="sale.commission.settlement",copy=False)
+    settlement_id = fields.Many2one(comodel_name="sale.commission.settlement", copy=False)
 
     @api.depends("line_ids.agent_ids.amount")
     def _compute_commission_total(self):
@@ -27,7 +27,7 @@ class AccountMove(models.Model):
     # def recompute_lines_agents(self):
     #     self.mapped("invoice_line_ids").recompute_agents()
     #
-
+    #
 
 class AccountMoveLine(models.Model):
     _inherit = [
@@ -43,17 +43,17 @@ class AccountMoveLine(models.Model):
     def _compute_any_settled(self):
         for record in self:
             record.any_settled = any(record.mapped("agent_ids.settled"))
-    #
-    # @api.depends("move_id.partner_id")
-    # def _compute_agent_ids(self):
-    #     self.agent_ids = False  # for resetting previous agents
-    #     for record in self.filtered(
-    #         lambda x: x.move_id.partner_id and x.move_id.type[:3] == "out"
-    #     ):
-    #         if not record.commission_free and record.product_id:
-    #             record.agent_ids = record._prepare_agents_vals_partner(
-    #                 record.move_id.partner_id
-    #             )
+
+    @api.depends("move_id.partner_id")
+    def _compute_agent_ids(self):
+        self.agent_ids = False  # for resetting previous agents
+        for record in self.filtered(
+                lambda x: x.move_id.partner_id and x.move_id.type[:3] == "out"
+        ):
+            if not record.commission_free and record.product_id:
+                record.agent_ids = record._prepare_agents_vals_partner(
+                    record.move_id.partner_id
+                )
 
 
 class AccountInvoiceLineAgent(models.Model):
@@ -82,7 +82,7 @@ class AccountInvoiceLineAgent(models.Model):
     company_id = fields.Many2one(
         comodel_name="res.company", compute="_compute_company", store=True,
     )
-    currency_id = fields.Many2one(related="object_id.currency_id", readonly=True,)
+    currency_id = fields.Many2one(related="object_id.currency_id", readonly=True, )
 
     @api.depends("object_id.price_subtotal", "object_id.product_id.commission_free")
     def _compute_amount(self):
@@ -118,7 +118,7 @@ class AccountInvoiceLineAgent(models.Model):
     def _check_settle_integrity(self):
         for record in self:
             if any(record.mapped("settled")):
-                raise exceptions.ValidationError(_("You can't modify a settled line"),)
+                raise exceptions.ValidationError(_("You can't modify a settled line"), )
 
     def _skip_settlement(self):
         """This function should return if the commission can be payed.
@@ -130,3 +130,4 @@ class AccountInvoiceLineAgent(models.Model):
             self.commission_id.invoice_state == "paid"
             and self.invoice_id.invoice_payment_state != "paid"
         ) or self.invoice_id.state != "posted"
+
