@@ -19,7 +19,7 @@
                 <group string="General information">
                     <group>
                         <field name="name" />
-                        <field name="active" />
+<!--                        <field name="active" />-->
                     </group>
                     <group>
                         <field name="commission_type" />

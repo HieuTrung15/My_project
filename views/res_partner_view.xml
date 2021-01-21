@@ -11,7 +11,7 @@
                 expr="//page[@name='sales_purchases']//field[@name='property_supplier_payment_term_id']"
                 position="after"
             >
-                <field name="agent" string="Agent" />
+                <field name="agent" string="Is Agent" />
             </xpath>
             <xpath
                 expr="//page[@name='sales_purchases']//field[@name='user_id']"
@@ -32,7 +32,7 @@
                 >
                     <group>
                         <group>
-                            <field name="agent_type" required="1" />
+<!--                            <field name="agent_type" required="1" />-->
                             <field
                                 name="commission_id"
                                 attrs="{'required': [('agent', '=', True)]}"
@@ -41,7 +41,7 @@
                         <group>
                             <field name="settlement" required="1" />
                         </group>
-                        <!-- TODO: Change it to smart-button -->
+
                         <group
                             colspan="4"
                             string="Settlements"

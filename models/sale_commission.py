@@ -1,26 +1,20 @@
-# License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
-
 from odoo import _, api, exceptions, fields, models
 
 
 class SaleCommission(models.Model):
-    _name = "sale.commission"
-    _description = "Commission in sales"
+    _name = 'sale.commission'
 
-    name = fields.Char("Name", required=True)
+    name = fields.Char(string='Name', required=True)
     commission_type = fields.Selection(
         selection=[("fixed", "Fixed percentage"), ("section", "By sections")],
-        string="Type",
-        required=True,
-        default="fixed",
-    )
-    fix_qty = fields.Float(string="Fixed percentage")
+        string="Type", required=True, default="fixed")
+    fix_qty = fields.Float(string='Fixed percentage')
     section_ids = fields.One2many(
         string="Sections",
         comodel_name="sale.commission.section",
         inverse_name="commission_id",
     )
-    active = fields.Boolean(default=True)
+    # active = fields.Boolean(default=True)
     invoice_state = fields.Selection(
         [("open", "Invoice Based"), ("paid", "Payment Based")],
         string="Invoice Status",

@@ -12,7 +12,7 @@
         "views/account_move_views.xml",
         "views/sale_commission_settlement_view.xml",
         "wizard/views/settle_commission.xml",
-        "wizard/views/wizard_invoice.xml",
+        # "wizard/views/wizard_invoice.xml",
     ],
     "demo": [],
     "installable": True,

@@ -3,56 +3,32 @@ from odoo.exceptions import UserError
 from odoo.tests.common import Form
 
 
-class Settlement(models.Model):
-    _name = "sale.commission.settlement"
-    _description = "Settlement"
+class SaleCommissionSettlement(models.Model):
+    _name = 'sale.commission.settlement'
 
     def _default_currency(self):
         return self.env.user.company_id.currency_id.id
 
-    name = fields.Char("Name")
-    total = fields.Float(compute="_compute_total", readonly=True, store=True)
-    date_from = fields.Date(string="From")
-    date_to = fields.Date(string="To")
-    agent_id = fields.Many2one(
-        comodel_name="res.partner", domain="[('agent', '=', True)]"
-    )
-    agent_type = fields.Selection(related="agent_id.agent_type")
-    line_ids = fields.One2many(
-        comodel_name="sale.commission.settlement.line",
-        inverse_name="settlement_id",
-        string="Settlement lines",
-        readonly=True,
-    )
+    name = fields.Char(string='Name')
+    total = fields.Float(compute='_compute_total', readonly=True, store=True)
+    date_from = fields.Date(string='From')
+    date_to = fields.Date(string='To')
+    agent_id = fields.Many2one('res.partner', domain="[('agent', '=', True)]")
+    # agent_type = fields.Selection(related="agent_id.agent_type")
+    line_ids = fields.One2many('sale.commission.settlement.line', 'settlement_id', string='Settlement lines',
+                               readonly=True)
     state = fields.Selection(
         selection=[
             ("settled", "Settled"),
             ("invoiced", "Invoiced"),
             ("cancel", "Canceled"),
-            ("except_invoice", "Invoice exception"),
+            # ("except_invoice", "Invoice exception"),
         ],
-        string="State",
-        readonly=True,
-        default="settled",
-    )
-    invoice_ids = fields.One2many(
-        comodel_name="account.move",
-        inverse_name="settlement_id",
-        string="Generated invoice",
-        readonly=True,
-    )
-    # TODO: To be removed
-    invoice_id = fields.Many2one(
-        store=True, comodel_name="account.move", compute="_compute_invoice_id",
-    )
-    currency_id = fields.Many2one(
-        comodel_name="res.currency", readonly=True, default=_default_currency
-    )
-    company_id = fields.Many2one(
-        comodel_name="res.company",
-        default=lambda self: self.env.user.company_id,
-        required=True,
-    )
+        string="State", readonly=True, default="settled")
+    invoice_ids = fields.One2many('account.move', 'settlement_id', string='Generated invoice', readonly=True)
+    invoice_id = fields.Many2one('account.move', store=True, compute='_compute_invoice_id')
+    currency_id = fields.Many2one(comodel_name="res.currency", readonly=True, default=_default_currency)
+    company_id = fields.Many2one("res.company", default=lambda self: self.env.user.company_id, required=True)
 
     @api.depends("line_ids", "line_ids.settled_amount")
     def _compute_total(self):
@@ -64,16 +40,16 @@ class Settlement(models.Model):
         for record in self:
             record.invoice_id = record.invoice_ids[:1]
 
-    def action_cancel(self):
-        if any(x.state != "settled" for x in self):
-            raise exceptions.Warning(_("Cannot cancel an invoiced settlement."))
-        self.write({"state": "cancel"})
-
-    def unlink(self):
-        """Allow to delete only cancelled settlements"""
-        if any(x.state == "invoiced" for x in self):
-            raise exceptions.Warning(_("You can't delete invoiced settlements."))
-        return super().unlink()
+    # def action_cancel(self):
+    #     if any(x.state != "settled" for x in self):
+    #         raise exceptions.Warning(_("Cannot cancel an invoiced settlement."))
+    #     self.write({"state": "cancel"})
+    #
+    # def unlink(self):
+    #     """Allow to delete only cancelled settlements"""
+    #     if any(x.state == "invoiced" for x in self):
+    #         raise exceptions.Warning(_("You can't delete invoiced settlements."))
+    #     return super().unlink()
 
     def action_invoice(self):
         return {
