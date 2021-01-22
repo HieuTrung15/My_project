@@ -1,21 +1,16 @@
-# Copyright 2014-2020 Tecnativa - Pedro M. Baeza
-# License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 from datetime import date, timedelta
-
 from dateutil.relativedelta import relativedelta
-
 from odoo import _, fields, models
 
 
 class SaleCommissionMakeSettle(models.TransientModel):
     _name = "sale.commission.make.settle"
-    _description = "Wizard for settling commissions in invoices"
 
     date_to = fields.Date("Up to", required=True, default=fields.Date.today())
     agent_ids = fields.Many2many(
         comodel_name="res.partner", domain="[('agent', '=', True)]"
     )
-
+    # ngay dau tien trong thang
     def _get_period_start(self, agent, date_to):
         if agent.settlement == "monthly":
             return date(month=date_to.month, year=date_to.year, day=1)
@@ -116,7 +111,6 @@ class SaleCommissionMakeSettle(models.TransientModel):
                             "agent_line": [(6, 0, [line.id])],
                         }
                     )
-        # go to results
         if len(settlement_ids):
             return {
                 "name": _("Created Settlements"),

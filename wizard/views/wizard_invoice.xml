@@ -11,22 +11,14 @@
                     <field name="product_id" />
                     <field name="date" />
                 </group>
-                <group
-                    string="Settlements"
-                    attrs="{'invisible': [('from_settlement', '=', True)]}"
-                >
-                    <p colspan="4">(keep empty for invoicing all the settlements)</p>
+                <group string="Settlements" attrs="{'invisible': [('from_settlement', '=', True)]}">
                     <field name="from_settlement" invisible="1" />
                     <group colspan="4">
                         <field name="settlement_ids" />
                     </group>
                 </group>
                 <footer>
-                    <button
-                        name="button_create"
-                        string="Create invoices"
-                        type="object"
-                        class="oe_highlight"
+                    <button name="button_create" string="Create invoices" type="object" class="oe_highlight"
                     />
                     or
                     <button special="cancel" string="_Cancel" class="oe_link" />
@@ -34,17 +26,14 @@
             </form>
         </field>
     </record>
-    <act_window
-        id="action_commission_make_invoices"
-        name="Create commission invoices"
-        res_model="sale.commission.make.invoice"
-        view_mode="form"
-        target="new"
-    />
-    <menuitem
-        id="menu_commission_make_invoices"
-        parent="menu_sale_commissions_management"
-        sequence="30"
-        action="action_commission_make_invoices"
-    />
+    <act_window id="action_commission_make_invoices" name="Create Commission Invoices" res_model="sale.commission.make.invoice"
+        view_mode="form" target="new"/>
+<!--    <record id="action_commission_make_invoices" model="ir.actions.act_window">-->
+<!--        <field name="name">Enter Promotion or Coupon Code</field>-->
+<!--        <field name="res_model">sale.commission.make.invoice</field>-->
+<!--        <field name="view_mode">form</field>-->
+<!--        <field name="target">new</field>-->
+<!--        <field name="view_id" ref="sale_coupon_apply_code_view_form"/>-->
+<!--     </record>-->
+    <menuitem id="menu_commission_make_invoices" parent="menu_sale_commissions_management" action="action_commission_make_invoices"/>
 </odoo>

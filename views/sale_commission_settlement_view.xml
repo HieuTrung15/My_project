@@ -4,12 +4,8 @@
         <field name="name">Settlements tree</field>
         <field name="model">sale.commission.settlement</field>
         <field name="arch" type="xml">
-            <tree
-                string="Settlements"
-                decoration-muted="state == 'invoiced'"
-                decoration-danger="state == 'cancel'"
-                create="false"
-            >
+            <tree string="Settlements" decoration-muted="state == 'invoiced'"
+                decoration-danger="state == 'cancel'" create="false">
                 <field name="agent_id" />
                 <field name="company_id" groups="base.group_multi_company" />
                 <field name="date_from" />
@@ -28,23 +24,11 @@
                 <field name="date_from" />
                 <field name="date_to" />
                 <field name="company_id" />
-                <filter
-                    string="This year"
-                    name="thisyear"
-                    domain="[('date_from', '&gt;=', time.strftime('%%Y-01-01')), ('date_to', '&lt;=', time.strftime('%%Y-12-31'))]"
-                />
+                <filter string="This year" name="thisyear" domain="[('date_from', '&gt;=', time.strftime('%%Y-01-01')), ('date_to', '&lt;=', time.strftime('%%Y-12-31'))]"/>
                 <separator />
                 <group expand="1" string="Group By">
-                    <filter
-                        string="Agent"
-                        name="group_agent"
-                        context="{'group_by': 'agent_id'}"
-                    />
-                    <filter
-                        string="Date from month"
-                        name="group_date"
-                        context="{'group_by': 'date_from:month'}"
-                    />
+                    <filter string="Agent" name="group_agent" context="{'group_by': 'agent_id'}"/>
+                    <filter string="Date from month" name="group_date" context="{'group_by': 'date_from:month'}"/>
                 </group>
             </search>
         </field>
@@ -55,35 +39,23 @@
         <field name="arch" type="xml">
             <form string="Settlement" create="false">
                 <header>
-                    <button
-                        string="Make invoice"
-                        attrs="{'invisible': ['|', ('state', '!=', 'settled')]}"
-                        class="oe_highlight"
-                        type="object"
-                        name="action_invoice"
-                    />
-                    <button
-                        string="Cancel"
-                        states="settled"
-                        type="object"
-                        name="action_cancel"
-                    />
+                    <button string="Make invoice" attrs="{'invisible': ['|', ('state', '!=', 'settled'), ('agent_type', '!=', 'agent')]}"
+                        class="oe_highlight" type="object" name="action_invoice"/>
+                    <button string="Cancel" states="settled" type="object" name="action_cancel"/>
                     <field name="state" widget="statusbar" />
                 </header>
                 <group>
                     <group>
                         <field name="agent_id" />
                         <field name="date_from" />
-                        <field
-                            name="invoice_id"
-                            attrs="{'invisible': [('state', '!=', 'invoiced')]}"
+                        <field name="invoice_id" attrs="{'invisible': [('state', '!=', 'invoiced')]}"
                         />
                     </group>
                     <group>
                         <field name="company_id" groups="base.group_multi_company" />
                         <field name="date_to" />
                         <field name="currency_id" invisible="1" />
-<!--                        <field name="agent_type" invisible="1" />-->
+                        <field name="agent_type" invisible="1" />
                     </group>
                 </group>
                 <group string="Commission lines" colspan="4">
@@ -97,18 +69,13 @@
                     </field>
                 </group>
                 <group class="oe_subtotal_footer oe_right">
-                    <field
-                        name="total"
-                        class="oe_subtotal_footer_separator"
-                        widget="monetary"
-                        options="{'currency_field': 'currency_id'}"
-                    />
+                    <field name="total" class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}"/>
                 </group>
             </form>
         </field>
     </record>
     <record model="ir.ui.view" id="view_settlement_line_tree">
-        <field name="name">Settlement lines</field>
+        <field name="name">Settlement Lines</field>
         <field name="model">sale.commission.settlement.line</field>
         <field name="arch" type="xml">
             <tree string="Settlement lines" create="false">
@@ -128,23 +95,12 @@
                 <field name="agent_id" />
                 <field name="date" />
                 <field name="commission_id" />
-                <filter
-                    string="This year"
-                    name="thisyear"
-                    domain="['|', ('date', '=', False), '&amp;',('date','&lt;=', time.strftime('%%Y-12-31')),('date','&gt;=',time.strftime('%%Y-01-01'))]"
-                />
+                <filter string="This year" name="thisyear"
+                    domain="['|', ('date', '=', False), '&amp;',('date','&lt;=', time.strftime('%%Y-12-31')),('date','&gt;=',time.strftime('%%Y-01-01'))]"/>
                 <separator />
                 <group expand="1" string="Group By">
-                    <filter
-                        string="Agent"
-                        name="group_agent"
-                        context="{'group_by': 'agent_id'}"
-                    />
-                    <filter
-                        string="Date month"
-                        name="group_date"
-                        context="{'group_by': 'date:month'}"
-                    />
+                    <filter string="Agent" name="group_agent" context="{'group_by': 'agent_id'}"/>
+                    <filter string="Date month" name="group_date" context="{'group_by': 'date:month'}"/>
                 </group>
             </search>
         </field>
@@ -166,10 +122,6 @@
         <field name="res_model">sale.commission.settlement</field>
         <field name="binding_view_types">form,tree</field>
     </record>
-    <menuitem
-        name="Settlements"
-        id="menu_settle_commissions"
-        parent="menu_sale_commissions_management"
-        action="action_settle_commission"
-    />
+    <menuitem name="Settlements" id="menu_settle_commissions"
+        parent="menu_sale_commissions_management" action="action_settle_commission"/>
 </odoo>

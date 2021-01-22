@@ -1,2 +1,2 @@
-from . import settle_commission
-from . import settle_invoice
+from . import wizard_settle
+from . import wizard_invoice
